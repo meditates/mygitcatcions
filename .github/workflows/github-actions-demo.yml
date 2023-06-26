@@ -17,3 +17,11 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y git vim python3 gcc build-essential gfortran
+          git clone --depth=100 --branch=releases/v0.20 https://github.com/spack/spack.git 
+          . spack/share/spack/setup-env.sh 
+          CXX=g++ && CC=gcc && FC=gfortran
+          spack install intel-oneapi-compilers@2021.4.0 
+

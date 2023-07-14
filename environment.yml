@@ -1,0 +1,4 @@
+spack:
+  specs:
+    - intel-oneapi-compilers@2021.4.0
+    - openmpi@4.1.5%oneapi@=2021.4.0

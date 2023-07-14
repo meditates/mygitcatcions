@@ -14,14 +14,13 @@ RUN yum update -y && yum install -y devtoolset-9 && \
 SHELL ["/bin/bash", "--login", "-c"]
 
 RUN git clone -c feature.manyFiles=true https://github.com/spack/spack.git /home/spack && \
-. spack/share/spack/setup-env.sh && \
-sed -i ‘7i\\ \ \ \ require: \x27%gcc\x27' spack/etc/spack/defaults/packages.yaml && \
-sed -i ‘7i\\ \ libxcrypt:' spack/etc/spack/defaults/packages.yaml && \
-sed -i ‘7i\\ \ \ \ require: \x27%gcc\x27' spack/etc/spack/defaults/packages.yaml &&\
-sed -i ‘7i\\ \ xz:' spack/etc/spack/defaults/packages.yaml && \
-sed -i ‘7i\\ \ \ \ require: \x27%gcc\x27' spack/etc/spack/defaults/packages.yaml && \
-sed -i ‘7i\\ \ diffutils:' spack/etc/spack/defaults/packages.yaml && \
-. spack/share/spack/setup-env.sh && \
+. /home/spack/share/spack/setup-env.sh && \
+sed -i ‘7i\\ \ \ \ require: \x27%gcc\x27' /home/spack/etc/spack/defaults/packages.yaml && \
+sed -i ‘7i\\ \ libxcrypt:' /home/spack/etc/spack/defaults/packages.yaml && \
+sed -i ‘7i\\ \ \ \ require: \x27%gcc\x27' /home/spack/etc/spack/defaults/packages.yaml &&\
+sed -i ‘7i\\ \ xz:' /home/spack/etc/spack/defaults/packages.yaml && \
+sed -i ‘7i\\ \ \ \ require: \x27%gcc\x27' /home/spack/etc/spack/defaults/packages.yaml && \
+sed -i ‘7i\\ \ diffutils:' /home/spack/etc/spack/defaults/packages.yaml && \
 spack compiler find && \
 CXX=g++ && CC=gcc && FC=gfortran && \
 spack install nvhpc@22.2 %gcc@9.3.1 && \
@@ -40,10 +39,13 @@ spack install cuda@12.1.1 %intel@2021.4.0 && \
 spack install netcdf-fortran@4.6.0 %gcc@9.3.1 &&CXX=g++ && CC=gcc && FC=gfortran && \
 
 COPY .environment.yml /home/environment.yml
+COPY entrypoint.sh /home/entrypoint.sh
+
 RUN spack env create myenv /home/environment.yml && spack env activate myenv && spack install
 
 ENV PATH="/home/spack/bin:$PATH"
 ENV LD_LIBRARY_PATH=/home/spack/lib:$LD_LIBRARY_PATH
 ENV PATH="/opt/rh/devtoolset-9/root/usr/bin:$PATH"
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]

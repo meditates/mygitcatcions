@@ -1,0 +1,6 @@
+  diffutils:
+    require: '%gcc'
+  xz:
+    require: '%gcc'
+  libxcrypt:
+    require: '%gcc'

@@ -14,6 +14,8 @@ RUN yum update -y && yum install -y devtoolset-9 && \
 SHELL ["/bin/bash", "--login", "-c"]
 
 COPY part /home/temp_file
+COPY environment.yml /home/environment.yml
+COPY entrypoints.sh /home/entrypoints.sh
 
 RUN git clone -c feature.manyFiles=true https://github.com/spack/spack.git /home/spack && \
 . /home/spack/share/spack/setup-env.sh && \
@@ -35,8 +37,6 @@ spack install openmpi@4.1.1 %intel@2021.4.0 && \
 spack install cuda@12.1.1 %intel@2021.4.0 && \
 spack install netcdf-fortran@4.6.0 %gcc@9.3.1 &&CXX=g++ && CC=gcc && FC=gfortran && \
 
-COPY environment.yml /home/environment.yml
-COPY entrypoints.sh /home/entrypoints.sh
 
 RUN spack env create myenv /home/environment.yml && spack env activate myenv && spack install
 
@@ -45,4 +45,3 @@ ENV LD_LIBRARY_PATH=/home/spack/lib:$LD_LIBRARY_PATH
 ENV PATH="/opt/rh/devtoolset-9/root/usr/bin:$PATH"
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/bash"]
